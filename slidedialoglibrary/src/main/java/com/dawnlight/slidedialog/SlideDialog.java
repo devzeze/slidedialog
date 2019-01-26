@@ -2,8 +2,6 @@ package com.dawnlight.slidedialog;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.ColorRes;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
@@ -19,22 +17,22 @@ import java.lang.ref.WeakReference;
 
 public class SlideDialog extends FrameLayout {
 
-    private static int FADE_TIME = 305;
+    private static final int FADE_TIME = 305;
 
-    private WeakReference<Activity> activityRef;
+    private final WeakReference<Activity> activityRef;
     private View quickDialogView;
     private View imageView;
     private String message;
     private int color;
 
-    private SlideDialog(@NonNull Context context) {
+    private SlideDialog(Context context) {
 
         super(context);
         init(context);
         this.activityRef = new WeakReference<>((Activity) context);
     }
 
-    public static SlideDialog newInstance(@NonNull Activity activity) {
+    public static SlideDialog newInstance(Activity activity) {
 
         if (!SlideDialogUtil.validActivity(activity)) {
             return null;
@@ -49,7 +47,7 @@ public class SlideDialog extends FrameLayout {
         return this;
     }
 
-    public SlideDialog color(@ColorRes int color) {
+    public SlideDialog color(int color) {
 
         this.color = color;
         return this;
@@ -115,7 +113,7 @@ public class SlideDialog extends FrameLayout {
                 .start();
     }
 
-    public void remove() {
+    private void remove() {
 
         ViewManager parent = (ViewManager) this.getParent();
         if (parent != null) {
@@ -124,7 +122,7 @@ public class SlideDialog extends FrameLayout {
     }
 
 
-    private void init(@NonNull Context context) {
+    private void init(Context context) {
 
         View dialogView = inflate(context, R.layout.slide_dialog, this);
 
