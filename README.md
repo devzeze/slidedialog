@@ -6,6 +6,18 @@ A simple slide dialog aligned on top of app bar.
 
 Project contains library and a demo app.
 
+## Adding dependency
+
+```groovy
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation 'com.dawnlight:slidedialog:1.0@aar'
+}
+```
+
 ## Usage
 
 ```
