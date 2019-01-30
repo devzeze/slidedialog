@@ -24,6 +24,8 @@ public class SlideDialog extends FrameLayout {
     private View imageView;
     private String message;
     private int color;
+    private boolean visible;
+    private boolean animated;
 
     private SlideDialog(Context context) {
 
@@ -53,6 +55,12 @@ public class SlideDialog extends FrameLayout {
         return this;
     }
 
+    public SlideDialog color(boolean animated) {
+
+        this.animated = animated;
+        return this;
+    }
+
     public void show() {
 
         if (activityRef != null && SlideDialogUtil.validActivity(activityRef.get())) {
@@ -66,6 +74,8 @@ public class SlideDialog extends FrameLayout {
                 quickDialogView.setBackgroundColor(activity.getResources().getColor(color));
             }
 
+            visible = true;
+
             activity.runOnUiThread(() -> {
                 if (SlideDialogUtil.validActivity(activity)) {
                     ((ViewGroup) activity.getWindow().getDecorView()).addView(this);
@@ -73,6 +83,10 @@ public class SlideDialog extends FrameLayout {
                 }
             });
         }
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
 
 
@@ -94,7 +108,9 @@ public class SlideDialog extends FrameLayout {
                             .withEndAction(() -> {
 
                                 //  3. Animates icon
-                                imageView.animate().setDuration(600).rotationBy(360).setInterpolator(new BounceInterpolator()).start();
+                                if (animated) {
+                                    imageView.animate().setDuration(600).rotationBy(360).setInterpolator(new BounceInterpolator()).start();
+                                }
 
                                 //  4. Waits in screen
                                 quickDialogView.postOnAnimationDelayed(() -> {
@@ -118,6 +134,7 @@ public class SlideDialog extends FrameLayout {
         ViewManager parent = (ViewManager) this.getParent();
         if (parent != null) {
             parent.removeView(this);
+            visible = false;
         }
     }
 
