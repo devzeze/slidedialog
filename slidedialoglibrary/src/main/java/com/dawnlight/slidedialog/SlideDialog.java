@@ -55,7 +55,7 @@ public class SlideDialog extends FrameLayout {
         return this;
     }
 
-    public SlideDialog color(boolean animated) {
+    public SlideDialog animated(boolean animated) {
 
         this.animated = animated;
         return this;
