@@ -20,6 +20,8 @@ dependencies {
 
 ## Usage
 
+![Slide Dialog](./docs/SlideDialogDemo.gif)
+
 ```
 SlideDialog.newInstance(this)
                     .message("Alert Message")
