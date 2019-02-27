@@ -17,13 +17,17 @@ import java.lang.ref.WeakReference;
 
 public class SlideDialog extends FrameLayout {
 
+    public static final int FADE_OUT_DISABLED = -1;
     private static final int FADE_TIME = 305;
+    private static final int FADE_OUT_DEFAULT = 1_000;
 
     private final WeakReference<Activity> activityRef;
     private View quickDialogView;
     private View imageView;
     private String message;
     private int color;
+    private int fadeOutTime = FADE_OUT_DEFAULT;
+    private int dialogHeight;
     private boolean visible;
     private boolean animated;
 
@@ -55,9 +59,15 @@ public class SlideDialog extends FrameLayout {
         return this;
     }
 
-    public SlideDialog animated (boolean animated) {
+    public SlideDialog animated(boolean animated) {
 
         this.animated = animated;
+        return this;
+    }
+
+    public SlideDialog fadeOutTime(int fadeOutTime) {
+
+        this.fadeOutTime = fadeOutTime;
         return this;
     }
 
@@ -99,7 +109,8 @@ public class SlideDialog extends FrameLayout {
                 .withEndAction(() -> {
 
                     //  Positions outside the window and makes visible
-                    int dialogHeight = quickDialogView.getHeight();
+
+                    dialogHeight = quickDialogView.getHeight();
                     quickDialogView.setAlpha(1f);
                     quickDialogView.setY(-dialogHeight);
 
@@ -112,18 +123,14 @@ public class SlideDialog extends FrameLayout {
                                     imageView.animate().setDuration(600).rotationBy(360).setInterpolator(new BounceInterpolator()).start();
                                 }
 
-                                //  4. Waits in screen
-                                quickDialogView.postOnAnimationDelayed(() -> {
+                                if (fadeOutTime >= 0) {
+                                    //  4. Waits in screen
+                                    quickDialogView.postOnAnimationDelayed(() -> {
 
-                                    //  5. Animates exiting window
-                                    quickDialogView.animate().y(-dialogHeight).setDuration(FADE_TIME)
-                                            .withEndAction(() -> {
-
-                                                //  6. Remove view
-                                                remove();
-                                            })
-                                            .start();
-                                }, 1000);
+                                        //  5. Animates exiting window
+                                        fadeOutAnimation();
+                                    }, fadeOutTime);
+                                }
                             }).start();
                 })
                 .start();
@@ -138,6 +145,18 @@ public class SlideDialog extends FrameLayout {
         }
     }
 
+    private void fadeOutAnimation() {
+
+        //  5. Animates exiting window
+        quickDialogView.animate().y(-dialogHeight).setDuration(FADE_TIME)
+                .withEndAction(() -> {
+
+                    //  6. Remove view
+                    remove();
+                })
+                .start();
+    }
+
 
     private void init(Context context) {
 
@@ -148,7 +167,7 @@ public class SlideDialog extends FrameLayout {
         quickDialogView.setAlpha(0);
 
         quickDialogView.setOnClickListener((View view) -> {
-            remove();
+            fadeOutAnimation();
         });
 
         animateShow();
